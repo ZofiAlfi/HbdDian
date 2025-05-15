@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="ulang tahun, sweet seventeen, perayaan, undangan">
+  <meta name="description" content="Perayaan Ulang Tahun Sweet Seventeen untuk Dian Nazwa">
+  <title>Perayaan Sweet Seventeen</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body {
+      background: linear-gradient(to bottom, #ffe4e1, #fff5ee);
+      overscroll-behavior: none;
+      position: relative;
+      min-height: 100vh;
+    }
+    .animate-fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+    .animate-fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .hover-scale {
+      transition: transform 0.3s ease;
+    }
+    .hover-scale:hover {
+      transform: scale(1.05);
+    }
+    #map {
+      height: 300px;
+      border-radius: 1rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    .leaflet-control-attribution {
+      display: none;
+    }
+    .balloon {
+      position: fixed;
+      width: 30px;
+      height: 40px;
+      background: #ff9999;
+      border-radius: 50%;
+      opacity: 0.7;
+      z-index: -1;
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh); }
+      100% { transform: translateY(-100vh); }
+    }
+    footer {
+      background: #ffccd5;
+      padding: 2rem;
+      color: #4a4a4a;
+      font-weight: 500;
+    }
+    .countdown {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    .countdown div {
+      background: linear-gradient(135deg, #ff80ab, #f06292);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      min-width: 5rem;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .countdown div:hover {
+      transform: scale(1.1);
+    }
+    .countdown .number {
+      font-size: 2rem;
+      font-weight: bold;
+      animation: flip 0.3s ease-in-out;
+    }
+    .countdown .label {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+    }
+    .countdown .label::before {
+      content: '';
+      font-size: 1rem;
+    }
+    .countdown-ended {
+      font-size: 1.5rem;
+      color: #e91e63;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .countdown-ended::before {
+      content: '🎉';
+      font-size: 1.5rem;
+    }
+    @keyframes flip {
+      0% { transform: rotateX(0); }
+      50% { transform: rotateX(180deg); }
+      100% { transform: rotateX(360deg); }
+    }
+    @media (max-width: 640px) {
+      .countdown div {
+        min-width: 4rem;
+        padding: 1rem;
+      }
+      .countdown .number {
+        font-size: 1.5rem;
+      }
+      .countdown .label {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body class="font-sans text-gray-800 overflow-x-hidden">
+  <!-- Balon Mengambang -->
+  <div class="balloon" style="left: 5%; animation-delay: 0s;"></div>
+  <div class="balloon" style="left: 15%; animation-delay: 1s; background: #ffb6c1;"></div>
+  <div class="balloon" style="left: 25%; animation-delay: 2s; background: #ffdab9;"></div>
+  <div class="balloon" style="left: 65%; animation-delay: 3s; background: #ff9999;"></div>
+  <div class="balloon" style="left: 75%; animation-delay: 4s; background: #ffb6c1;"></div>
+  <div class="balloon" style="left: 85%; animation-delay: 5s; background: #ffdab9;"></div>
+
+  <!-- Bagian Hero -->
+  <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative">
+    <h1 class="text-5xl md:text-7xl font-bold text-pink-600 animate-fade-in">Sweet Seventeen!</h1>
+    <p class="text-2xl md:text-3xl mt-4 text-gray-600 animate-fade-in">Pesta Ulang Tahun Dian Nazwa</p>
+    <div class="relative mt-8">
+      <img src="./Nazwa.jpg" alt="Kue Ulang Tahun" class="rounded-full w-40 h-40 object-cover shadow-lg animate-fade-in hover-scale">
+    </div>
+  </section>
+
+  <!-- Tentang Perayaan -->
+  <section class="py-16 px-4 bg-white/50">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-4xl font-semibold text-pink-500 animate-fade-in">Mengenal Dian Nazwa</h2>
+      <p class="mt-6 text-lg text-gray-600 leading-relaxed animate-fade-in">
+        Dian Nazwa adalah bintang yang bersinar di usia tujuh belas tahun! Penuh dengan mimpi, tawa, dan pesona tak terbatas, 
+        sweet seventeen ini adalah momen berharga yang patut dirayakan. Bergabunglah untuk membuat hari ini tak terlupakan!
+      </p>
+    </div>
+  </section>
+
+  <!-- Detail Acara -->
+  <section class="py-16 px-4 bg-white/50">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-4xl font-semibold text-pink-500 animate-fade-in">Detail Pesta</h2>
+      <div class="mt-8 text-lg text-gray-600 space-y-4">
+        <p class="animate-fade-in"><strong>Tanggal:</strong> Sabtu, 31 Mei 2025</p>
+        <p class="animate-fade-in"><strong>Waktu:</strong> 15:30 WIB</p>
+        <p class="animate-fade-in"><strong>Lokasi:</strong> Botania Garden Blok C4 No 1</p>
+        <p class="animate-fade-in"><strong>Agenda:</strong> Ulang Tahun Sweet Seventeen</p>
+      </div>
+      <div class="countdown mt-8 animate-fade-in" id="countdown">
+        <div><span class="number" id="days">0</span><span class="label">Hari</span></div>
+        <div><span class="number" id="hours">0</span><span class="label">Jam</span></div>
+        <div><span class="number" id="minutes">0</span><span class="label">Menit</span></div>
+        <div><span class="number" id="seconds">0</span><span class="label">Detik</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Peta -->
+  <section class="py-16 px-4 bg-pink-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-4xl font-semibold text-pink-500 text-center mb-8 animate-fade-in">Bergabung di Sini</h2>
+      <div id="map" class="animate-fade-in"></div>
+      <div class="mt-4 text-center">
+        <a id="directions-btn" href="#" class="inline-block bg-pink-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-pink-600 transition duration-300 animate-fade-in">Dapatkan Petunjuk Arah</a>
+      </div>
+        <footer class="py-8 bg-pink-100 text-center text-gray-600">
+            <p class="animate-fade-in">Dibuat dengan ❤️ untuk Sweet Seventeen Dian Nazwa</p>
+        </footer>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Countdown Timer
+    const eventDate = new Date('2025-05-31T15:30:00+07:00').getTime();
+    const countdown = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = eventDate - now;
+
+      if (distance < 0) {
+        clearInterval(countdown);
+        document.getElementById('countdown').innerHTML = '<p class="countdown-ended animate-fade-in">Pesta telah dimulai!</p>';
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById('days').textContent = days;
+      document.getElementById('hours').textContent = hours;
+      document.getElementById('minutes').textContent = minutes;
+      document.getElementById('seconds').textContent = seconds;
+    }, 1000);
+
+    // Inisialisasi peta Leaflet dengan tiles Google Maps
+    const map = L.map('map').setView([1.1285887, 104.0996538], 15);
+    L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      maxZoom: 120,
+      attribution: '© Google'
+    }).addTo(map);
+    L.marker([1.1285887, 104.0996538]).addTo(map)
+      .bindPopup('Botania Garden Blok C4 No 1')
+      .openPopup();
+
+    // Logika tombol petunjuk arah
+    const directionsBtn = document.getElementById('directions-btn');
+    directionsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const destination = '1.1285887,104.0996538';
+            const googleMapsUrl = `https://www.google.com/maps/dir/${latitude},${longitude}/${destination}`;
+            window.open(googleMapsUrl, '_blank');
+          },
+          (error) => {
+            const googleMapsUrl = `https://www.google.com/maps/dir//1.1285887,104.0996538`;
+            window.open(googleMapsUrl, '_blank');
+            console.error('Kesalahan geolokasi:', error);
+          }
+        );
+      } else {
+        const googleMapsUrl = `https://www.google.com/maps/dir//1.1285887,104.0996538`;
+        window.open(googleMapsUrl, '_blank');
+      }
+    });
+
+    // Efek fade-in saat scroll
+    const faders = document.querySelectorAll('.animate-fade-in');
+    const appearOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -50px 0px',
+    };
+    const appearOnScroll = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, appearOptions);
+    faders.forEach(fader => appearOnScroll.observe(fader));
+  </script>
+</body>
+</html>
